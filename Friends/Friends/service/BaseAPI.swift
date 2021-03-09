@@ -47,4 +47,46 @@ class BaseAPI {
             
         }
     }
+    func jsonAPIGETCall(endpointUrl:URL ,_ completion: @escaping (Result<String, Error>) -> Void) {
+//        let endpoint = WebUrl.loginUrl
+        
+//        guard let endpointUrl = URL(string: endpoint) else {
+//            completion(.failure(RequestError.invalidURL))
+//            return
+//        }
+        do {
+            var request = URLRequest(url: endpointUrl)
+            request.httpMethod = "GET"
+           // request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.addValue("application/json", forHTTPHeaderField: "Accept")
+            
+            let session = URLSession.shared
+            let task = session.dataTask(with: request, completionHandler:{ data, response, error in
+
+              
+    
+                if let httpResponse = response as? HTTPURLResponse {
+                    print(httpResponse.statusCode)
+                    if(httpResponse.statusCode == 200){
+                        if let data = data, let dataString = String(data: data, encoding: .utf8) {
+                            print(dataString)
+                            completion(.success(dataString))
+                        }else{
+                            completion(.failure(RequestError.failedToLogin))
+                        }
+                    }else{
+                        completion(.failure(RequestError.failedToLogin))
+                    }
+                }else{
+                    completion(.failure(RequestError.failedToLogin))
+                }
+                
+                
+                
+            })
+            
+            task.resume()
+            
+        }
+    }
 }

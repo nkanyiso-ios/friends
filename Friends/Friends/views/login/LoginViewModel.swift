@@ -9,7 +9,8 @@ import Foundation
 
 class LoginViewModel{
     let loginService = LoginService()
-    var loginResult : LiveData<LoginStatus> = LiveData(LoginStatus.non)
+    let friendsService = FriendsService()
+    var loginResult : LiveData<RequestStatus> = LiveData(RequestStatus.non)
     var errorMsg : Error = ValidationError.non
     func doLogin(usernameString: String,passwordString: String){
         self.validateLoginInput(username: usernameString,password: passwordString){ (Results) in
@@ -20,7 +21,7 @@ class LoginViewModel{
                 self.doAPICall(loginData : loginRequestData)
             case .failure(let error):
                 self.errorMsg = error
-                self.loginResult.value = LoginStatus.failed
+                self.loginResult.value = RequestStatus.failed
                 
             }
         }
@@ -41,16 +42,22 @@ class LoginViewModel{
             
             case .success(let dataResponse):
                 if(dataResponse.result){
+                    guard let uid = dataResponse.guid,let name = dataResponse.firstName else{
+                        errorMsg =  RequestError.failedToLogin
+                        loginResult.value = RequestStatus.failed
+                        return
+                    }
                     saveUserDetails(userModel: dataResponse)
-                    loginResult.value = LoginStatus.success
+                    loginResult.value = RequestStatus.success
+                    getFriendsList(firstname: name, uniqueId: uid)
                 }else{
                     errorMsg =  RequestError.incorrectCredentials
-                    loginResult.value = LoginStatus.failed
+                    loginResult.value = RequestStatus.failed
                    
                 }
             case .failure(let error):
                 errorMsg =  error
-                loginResult.value = LoginStatus.failed
+                loginResult.value = RequestStatus.failed
                 
             }
         }
@@ -61,5 +68,28 @@ class LoginViewModel{
         defaults.setValue(userModel.lastName, forKey: Keys.lastName)
         defaults.setValue(userModel.result, forKey: Keys.loginResults)
         defaults.setValue(userModel.guid, forKey: Keys.guuid)
+    }
+    func createFriendsURLWithComponents(firstname: String, uniqueId : String) -> URL? {
+        var urlComponents = URLComponents()
+        urlComponents.scheme = WebUrl.friendsUrlScheme
+        urlComponents.host = WebUrl.friendsUrlHost
+        urlComponents.path = WebUrl.friendsUrlPath
+        let queryItems = [URLQueryItem(name:"uniqueID", value: uniqueId),
+                              URLQueryItem(name:  "name", value: firstname)]
+        urlComponents.queryItems = queryItems
+        
+        return urlComponents.url
+    }
+    func getFriendsList(firstname: String, uniqueId : String){
+        let url = createFriendsURLWithComponents(firstname: firstname, uniqueId: uniqueId)
+        friendsService.getFriends(friendsURL: url!) { (Results) in
+            switch Results{
+            
+            case .success(let data):
+                print(data)
+            case .failure( let error):
+                print(error.localizedDescription)
+            }
+        }
     }
 }

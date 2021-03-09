@@ -19,7 +19,10 @@ class LoginViewController: UIViewController {
             if(LoginStatus == .failed){
                 self.showAlert(message: self.loginViewModel.errorMsg.localizedDescription)
             }else if(LoginStatus == .success){
-                self.showAlert(message: "login success")
+//                self.showAlert(message: "login success")
+                DispatchQueue.main.async {
+                    self.performSegue(withIdentifier: "ShowFriends", sender: self)
+                }
             }
         })
     }
@@ -54,8 +57,8 @@ class LoginViewController: UIViewController {
         alert.addAction(action)
         DispatchQueue.main.async {
             self.present(alert, animated: true, completion: nil)
-           }
-
+        }
+        
         
     }
     

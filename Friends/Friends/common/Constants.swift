@@ -15,6 +15,9 @@ struct Keys{
 }
 struct WebUrl{
     static let loginUrl = "http://mobileexam.dstv.com/login"
+    static let friendsUrlScheme = "http"
+    static let friendsUrlHost = "mobileexam.dstv.com"
+    static let friendsUrlPath = "/friends.php"
 }
 
 enum RequestError: Error {
@@ -30,7 +33,7 @@ enum ValidationError: Error {
     case non
 
 }
-enum LoginStatus :String {
+enum RequestStatus :String {
     case success
     case failed
     case loading
