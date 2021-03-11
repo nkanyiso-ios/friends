@@ -11,7 +11,7 @@ struct Keys{
     static let loginResults = "login_result"
     static let lastName = "lastName"
     static let firstName = "firstName"
-    static let guuid = "guid"
+    static let guid = "guid"
 }
 struct WebUrl{
     static let loginUrl = "http://mobileexam.dstv.com/login"

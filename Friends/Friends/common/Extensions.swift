@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 struct JSON {
     static let encoder = JSONEncoder()
 }
@@ -17,6 +18,5 @@ extension Encodable {
         return (try? JSONSerialization.jsonObject(with: JSON.encoder.encode(self))) as? [String: Any] ?? [:]
     }
 }
-
 
 

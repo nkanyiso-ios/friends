@@ -9,7 +9,7 @@ import Foundation
 
 class LoginViewModel{
     let loginService = LoginService()
-    let friendsService = FriendsService()
+    
     var loginResult : LiveData<RequestStatus> = LiveData(RequestStatus.non)
     var errorMsg : Error = ValidationError.non
     func doLogin(usernameString: String,passwordString: String){
@@ -42,14 +42,13 @@ class LoginViewModel{
             
             case .success(let dataResponse):
                 if(dataResponse.result){
-                    guard let uid = dataResponse.guid,let name = dataResponse.firstName else{
+                    guard let _ = dataResponse.guid,let _ = dataResponse.firstName else{
                         errorMsg =  RequestError.failedToLogin
                         loginResult.value = RequestStatus.failed
                         return
                     }
                     saveUserDetails(userModel: dataResponse)
                     loginResult.value = RequestStatus.success
-                    getFriendsList(firstname: name, uniqueId: uid)
                 }else{
                     errorMsg =  RequestError.incorrectCredentials
                     loginResult.value = RequestStatus.failed
@@ -67,29 +66,8 @@ class LoginViewModel{
         defaults.setValue(userModel.firstName, forKey: Keys.firstName)
         defaults.setValue(userModel.lastName, forKey: Keys.lastName)
         defaults.setValue(userModel.result, forKey: Keys.loginResults)
-        defaults.setValue(userModel.guid, forKey: Keys.guuid)
+        defaults.setValue(userModel.guid, forKey: Keys.guid)
     }
-    func createFriendsURLWithComponents(firstname: String, uniqueId : String) -> URL? {
-        var urlComponents = URLComponents()
-        urlComponents.scheme = WebUrl.friendsUrlScheme
-        urlComponents.host = WebUrl.friendsUrlHost
-        urlComponents.path = WebUrl.friendsUrlPath
-        let queryItems = [URLQueryItem(name:"uniqueID", value: uniqueId),
-                              URLQueryItem(name:  "name", value: firstname)]
-        urlComponents.queryItems = queryItems
-        
-        return urlComponents.url
-    }
-    func getFriendsList(firstname: String, uniqueId : String){
-        let url = createFriendsURLWithComponents(firstname: firstname, uniqueId: uniqueId)
-        friendsService.getFriends(friendsURL: url!) { (Results) in
-            switch Results{
-            
-            case .success(let data):
-                print(data)
-            case .failure( let error):
-                print(error.localizedDescription)
-            }
-        }
-    }
+ 
+
 }

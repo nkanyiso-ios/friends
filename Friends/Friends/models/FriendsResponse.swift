@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+struct FriendsResponseModel :Decodable{
+    var result : Bool
+    var friends: [FriendModel]?
+}
+
+
