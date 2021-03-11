@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:/Users/nkanyisohlela/Documents/mygit/friends/Friends/Friends/Assets.xcassets">
+   </FileRef>
+   <FileRef
       location = "self:">
    </FileRef>
 </Workspace>
