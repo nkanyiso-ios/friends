@@ -76,10 +76,8 @@ class FriendsViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        // performSegue(withIdentifier: "showFriendsDetail", sender: self)
         let detailVC = self.storyboard?.instantiateViewController(withIdentifier: "friendsDetail") as! FriendsDetailViewController
-        detailVC.friend = friendsViewModel.friendsList?[indexPath.row]
+        detailVC.friend = friendsViewModel.friendsList?[indexPath.section]
         navigationController?.pushViewController(detailVC, animated: true)
         
     }
