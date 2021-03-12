@@ -92,9 +92,7 @@ extension UIViewController{
     func hideLoader(view : UIView){
         DispatchQueue.main.async {
             overlay.removeFromSuperview()
-           // overlay = nil
             indicator.removeFromSuperview()
-            //indicator = nil
             }
     }
     

@@ -12,11 +12,6 @@ class FriendsViewModel{
     var friendsResult : LiveData<RequestStatus> = LiveData(RequestStatus.non)
     let friendsService = FriendsService()
     var friendsList : [FriendModel]? = [FriendModel]()
-//    func getFriendsList(){
-//        let friend = FriendModel.init(firstName: "My My", lastName: "Last Last", alias: "Alias Name", dateOfBirth: "10/03/2021", status: <#T##String#>)
-//        friendsList = [friend]
-//        friendsResult.value = .success
-//    }
     func getFriendsList(){
         let defaults = UserDefaults.standard
         let usrFirstname = defaults.string(forKey: Keys.firstName)
